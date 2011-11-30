@@ -22,6 +22,7 @@ group :development do
   # By default to run application thin web server is used
   gem 'thin', :platforms => [:ruby, :mswin, :mingw]
   gem 'rhomobile-debug', ">= 1.0.2"
+  gem 'awesome_print'
 end
 
 group :test do

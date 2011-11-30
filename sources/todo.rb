@@ -30,10 +30,9 @@ class Todo < SourceAdapter
  
   def create(create_hash)
     result = RestClient.post(@base, :todo => create_hash)
-
     JSON.parse(
       RestClient.get("#{result.headers[:location]}.json").body
-    )['todo']['id']
+    )['id']
   end
  
   def update(update_hash)

@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'awesome_print'
 
 # Set environment to test
 ENV['RHO_ENV'] = 'test'
