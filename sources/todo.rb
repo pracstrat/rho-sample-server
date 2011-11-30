@@ -1,5 +1,9 @@
+require 'json'
+require 'rest_client'
+
 class Todo < SourceAdapter
   def initialize(source) 
+    @base = 'localhost:3000/todos'
     super(source)
   end
  
@@ -7,14 +11,14 @@ class Todo < SourceAdapter
     # TODO: Login to your data source here if necessary
   end
  
-  def query(params=nil)
-    # TODO: Query your backend data source and assign the records 
-    # to a nested hash structure called @result. For example:
-    # @result = { 
-    #   "1"=>{"name"=>"Acme", "industry"=>"Electronics"},
-    #   "2"=>{"name"=>"Best", "industry"=>"Software"}
-    # }
-    raise SourceAdapterException.new("Please provide some code to read records from the backend data source")
+  def query(params=nil)    
+    parsed = JSON.parse(RestClient.get("#{@base}.json").body)
+    
+    @result = {}
+    parsed.each do |item|
+      key = item['id'].to_s
+      @result[key] = item
+    end if parsed
   end
  
   def sync
@@ -25,20 +29,21 @@ class Todo < SourceAdapter
   end
  
   def create(create_hash)
-    # TODO: Create a new record in your backend data source
-    raise "Please provide some code to create a single record in the backend data source using the create_hash"
+    result = RestClient.post(@base, :todo => create_hash)
+
+    JSON.parse(
+      RestClient.get("#{result.headers[:location]}.json").body
+    )['todo']['id']
   end
  
   def update(update_hash)
-    # TODO: Update an existing record in your backend data source
-    raise "Please provide some code to update a single record in the backend data source using the update_hash"
+    id = update_hash['id']
+    update_hash.delete('id')
+    RestClient.put("#{@base}/#{id}", :todo => update_hash)
   end
  
   def delete(delete_hash)
-    # TODO: write some code here if applicable
-    # be sure to have a hash key and value for "object"
-    # for now, we'll say that its OK to not have a delete operation
-    # raise "Please provide some code to delete a single object in the backend application using the object_id"
+    RestClient.delete("#{@base}/#{delete_hash['id']}")
   end
  
   def logoff
