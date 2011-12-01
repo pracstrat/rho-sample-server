@@ -11,16 +11,20 @@ Required
 ===
 
 dtach: [http://dtach.sourceforge.net](http://dtach.sourceforge.net)
+
 redis: [http://redis.io](http://redis.io)
+
 
 Install
 ===
+
 ```
 $ bundle install
 ```
 
 Run
 ===
+
 ```
 $ rake rhoconnect:start
 ```
